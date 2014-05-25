@@ -15,10 +15,10 @@ typedef std::size_t size_type;
 #define SEED_UNIFORM 42
 
 //ds generates and initializes a fresh matrix
-value_type* generateMatrix( value_type* p_matMatrix, const size_type tN, const bool p_bSetZero = false )
+value_type* generateMatrix( value_type* p_matMatrix, const size_type& p_tN, const bool& p_bSetZero = false )
 {
     //ds allocate memory for the matrices and escape for the first fail
-    if( posix_memalign( reinterpret_cast<void**>( &p_matMatrix ), ALIGNMENT, tN*tN*sizeof( value_type ) ) )
+    if( posix_memalign( reinterpret_cast<void**>( &p_matMatrix ), ALIGNMENT, p_tN*p_tN*sizeof( value_type ) ) )
     {
         //ds escape
         throw std::bad_alloc( );
@@ -28,7 +28,7 @@ value_type* generateMatrix( value_type* p_matMatrix, const size_type tN, const b
     if( p_bSetZero )
     {
         //ds just set all values to zero
-        std::generate_n( p_matMatrix, tN*tN, [ ]( ){ return 0.0; } );
+        std::generate_n( p_matMatrix, p_tN*p_tN, [ ]( ){ return 0.0; } );
     }
     else
     {
@@ -39,7 +39,7 @@ value_type* generateMatrix( value_type* p_matMatrix, const size_type tN, const b
         std::uniform_real_distribution< double > cDistribution ( 0.0, 1.0 );
 
         //ds initialize values
-        std::generate_n( p_matMatrix, tN*tN, [ &cGenerator, &cDistribution ]( ){ return cDistribution( cGenerator ); } );
+        std::generate_n( p_matMatrix, p_tN*p_tN, [ &cGenerator, &cDistribution ]( ){ return cDistribution( cGenerator ); } );
     }
 
     //ds return pointer to memory
@@ -47,18 +47,18 @@ value_type* generateMatrix( value_type* p_matMatrix, const size_type tN, const b
 }
 
 //ds serial gemm method
-void gemm( const size_type tN, const value_type* p_matA, const value_type* p_matB, value_type* p_matC )
+void gemm( const size_type& p_tN, const value_type* p_matA, const value_type* p_matB, value_type* p_matC )
 {
     //ds loop over each element
-    for( size_type i = 0; i < tN; ++i )
+    for( size_type i = 0; i < p_tN; ++i )
     {
-        for( size_type j = 0; j < tN; ++j )
+        for( size_type j = 0; j < p_tN; ++j )
         {
             //ds for all k
-            for( unsigned int k = 0; k < tN; ++k )
+            for( size_type k = 0; k < p_tN; ++k )
             {
                 //ds value of vice versa
-                p_matC[i*tN+j] += p_matA[i*tN+k] * p_matB[k*tN+j];
+                p_matC[i*p_tN+j] += p_matA[i*p_tN+k]*p_matB[k*p_tN+j];
             }
         }
     }

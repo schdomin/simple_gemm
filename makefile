@@ -14,7 +14,7 @@ gemm_blas: gemm_blas.cpp
 	g++ -O3 -Wall -std=c++11 $< -o $@ -lf77blas #ETHZ: -lblas -llapack
 	
 gemm_simd: gemm_simd.cpp
-	g++ -O3 -Wall -std=c++11 -ffast-math -ftree-vectorize -ftree-vectorizer-verbose=1 $< -o $@
+	g++ -O3 -Wall -std=c++11 -ffast-math -ftree-vectorize -ftree-vectorizer-verbose=0 $< -o $@
 	
 gemm_mpi: gemm_mpi.cpp
 	mpic++ -O3 -Wall -std=c++11 $< -o $@
